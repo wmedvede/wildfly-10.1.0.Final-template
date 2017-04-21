@@ -352,7 +352,7 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:security:1.2">
             <security-domains>
-                <security-domain name="other" cache-type="default">
+                <security-domain name="other-original" cache-type="default">
                     <authentication>
                         <login-module code="Remoting" flag="optional">
                             <module-option name="password-stacking" value="useFirstPass"/>
@@ -380,6 +380,20 @@
                         <auth-module code="Dummy"/>
                     </authentication-jaspi>
                 </security-domain>
+
+                <security-domain name="other" cache-type="default">
+                    <authentication>
+			<login-module code="UsersRoles" flag="required">
+				<module-option name="usersProperties" value="${jboss.server.config.dir}/bpms-users.properties"/>
+				<module-option name="rolesProperties" value="${jboss.server.config.dir}/bpms-roles.properties"/>
+			</login-module>
+
+			<!-- KieLoginModule is required for kie-wb -> kie-server integration -->
+			<login-module code="org.kie.security.jaas.KieLoginModule" flag="optional" module="deployment.kie-wb.war"/>
+                    </authentication>
+                </security-domain>
+
+
             </security-domains>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:transactions:3.0">
